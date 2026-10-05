@@ -1,24 +1,62 @@
-# FactSource Assistant
+## Disclaimer & Safety Guidelines
 
-Build a polished submission-ready React + TypeScript + Tailwind/shadcn app called "Facts-Only MF Assistant" for an academic RAG assignment. Use a static local curated corpus and lightweight keyword retrieval, no API keys, no auth, no PII storage. Scope to one AMC (prefer HDFC Mutual Fund) and 4 schemes, with 15–25 official AMC/SEBI/AMFI source records. UI: professional financial research aesthetic; header with title and RAG/Official Sources badge; welcome line; 3 example questions; chat; reset chat; visible disclaimer "Facts-only. No investment advice. Do not share PAN, Aadhaar, account numbers, OTPs, email addresses, or phone numbers." Support factual intents: expense ratio, exit load, minimum SIP/investment, ELSS lock-in, riskometer, benchmark, statement/capital-gains statement download, scheme identity/objective. Every factual answer <=3 sentences, grounded only in retrieved corpus, with exactly one clear official source link and "Last updated from sources: [date]". Advice questions (buy/sell, best fund, portfolio allocation, return comparisons/predictions) must be politely refused with an educational official link. PII input must be blocked/not echoed. If confidence is insufficient, say the fact cannot be verified from the current official corpus and provide a relevant official source. Add Sources panel with 15–25 records and domains; About/README-style section with setup, scope, architecture, known limits, safety rules, submission checklist; Sample Q&A with 8 examples; disclaimer snippet; architecture card User -> Intent/PII Gate -> Retriever -> Grounded Answer -> Citation. Make it immediately usable after deployment and optimize for traceability and citation accuracy. Populate the corpus with clearly identified official source URLs and fact snippets; do not use third-party blogs or fabricated citations.
+> **Facts-only. No investment advice.**  
+> This application is strictly an educational research tool for mutual fund fact retrieval. It does not offer financial advice, returns forecasting, or scheme recommendations. Mutual fund investments are subject to market risks; read all scheme-related documents carefully.  
+> **Privacy**: Never input Personally Identifiable Information (PAN, Aadhaar, bank accounts, folio numbers, OTPs, email addresses, or phone numbers).
 
-This project was built with [Lovable](https://lovable.dev).
+---
 
-## Build with Lovable
+## Sample Q&A
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/ed376022-0b56-41d4-8d20-9911006c98f3).
+1. **What is the exit load for HDFC Flexi Cap Fund?**  
+   - **Answer**: 1.00% if redeemed or switched out within 1 year from the date of allotment; Nil after 1 year.  
+   - **Source**: HDFC Flexi Cap Fund KIM/SID (`hdfcfund.com`)
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+2. **What is the statutory lock-in period for HDFC ELSS Tax Saver Fund?**  
+   - **Answer**: 3 years statutory lock-in from the date of each allotment under Section 80C rules. Units cannot be redeemed or transferred during this period.  
+   - **Source**: SEBI Mutual Fund Regulations (`sebi.gov.in`)
 
-## Development
+3. **What is the minimum SIP investment for HDFC Mid-Cap Opportunities Fund?**  
+   - **Answer**: ₹100 per month with a minimum of 6 installments.  
+   - **Source**: HDFC Scheme Documents (`hdfcfund.com`)
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+4. **Which fund should I buy between Flexi Cap and Mid Cap for high returns?**  
+   - **Answer**: Refused (Advice Gate). The assistant does not make scheme recommendations or return predictions. Consult a SEBI-registered financial advisor.  
+   - **Source**: SEBI Investor Education (`investor.sebi.gov.in`)
 
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+5. **Where can I download my Consolidated Account Statement (CAS)?**  
+   - **Answer**: Through CAMS Mailback or KFintech investor portals using your registered email ID.  
+   - **Source**: CAMS CAS Service (`camsonline.com`)
+
+---
+
+## Source List (Curated Corpus)
+
+| ID | Publisher | Domain | Topic / Scheme |
+| :--- | :--- | :--- | :--- |
+| **S01** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Flexi Cap Fund — Investment Objective & Category |
+| **S02** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Flexi Cap Fund — Exit Load Structure |
+| **S03** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Flexi Cap Fund — Minimum SIP & Lumpsum Investment |
+| **S04** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Flexi Cap Fund — Benchmark & Riskometer |
+| **S05** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Mid-Cap Opportunities Fund — Objective & Mandate |
+| **S06** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Mid-Cap Opportunities Fund — Exit Load |
+| **S07** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Mid-Cap Opportunities Fund — Minimum SIP |
+| **S08** | SEBI | `sebi.gov.in` | HDFC ELSS Tax Saver Fund — Statutory 3-Year Lock-In |
+| **S09** | HDFC Mutual Fund | `hdfcfund.com` | HDFC ELSS Tax Saver Fund — Objective & Asset Allocation |
+| **S10** | HDFC Mutual Fund | `hdfcfund.com` | HDFC ELSS Tax Saver Fund — Exit Load (Nil post lock-in) |
+| **S11** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Liquid Fund — Objective & Money Market Instruments |
+| **S12** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Liquid Fund — 7-Day Graded Exit Load Schedule |
+| **S13** | HDFC Mutual Fund | `hdfcfund.com` | HDFC Liquid Fund — Minimum Investment & SIP Amounts |
+| **S14** | SEBI | `sebi.gov.in` | SEBI Total Expense Ratio (TER) Regulatory Caps |
+| **S15** | AMFI | `amfiindia.com` | Daily Scheme Total Expense Ratio Disclosures |
+| **S16** | HDFC Mutual Fund | `hdfcfund.com` | Account Services & Capital Gains Statement Download |
+| **S17** | CAMS (RTA) | `camsonline.com` | Consolidated Account Statement (CAS) Service |
+| **S18** | KFintech (RTA) | `kfintech.com` | RTA Investor Portal & Statement Generation |
+| **S19** | SEBI | `sebi.gov.in` | Product Labeling Circular (Risk-o-meter Guidelines) |
+| **S20** | SEBI | `sebi.gov.in` | Circular on Uniformity in Mutual Fund Benchmarks |
+| **S21** | HDFC Mutual Fund | `hdfcfund.com` | Systematic Investment Plan (SIP) Facility Terms |
+| **S22** | HDFC Mutual Fund | `hdfcfund.com` | Official Scheme Information Documents (SID & KIM) |
+| **S23** | SEBI | `investor.sebi.gov.in` | SEBI Investor Education & Protection Portal |
+| **S24** | AMFI | `amfiindia.com` | AMFI Code of Conduct & Scheme Categorization |
+| **S25** | SEBI | `scores.sebi.gov.in` | SEBI Complaints Redress System (SCORES Portal) |
+
