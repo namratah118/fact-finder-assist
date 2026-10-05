@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState, useEffect } from "react";
 import { CORPUS, CORPUS_LAST_UPDATED, AMC, SCHEMES } from "@/data/corpus";
+import { sources as uploadedSources } from "@/data/uploaded-sources";
 import { answerQuestion, EXAMPLE_QUESTIONS, SAMPLE_QA, type Answer } from "@/lib/rag";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -232,17 +234,26 @@ function Sources() {
     () => Array.from(new Set(CORPUS.map((c) => c.domain))).sort(),
     [],
   );
+  const [sourceSet, setSourceSet] = useState<"corpus" | "supplied">("corpus");
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-border bg-card p-4">
-        <h2 className="text-base font-semibold">Corpus ({CORPUS.length} official records)</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Domains: {domains.join(" · ")}. Only AMC, SEBI, AMFI and RTA sources — no blogs or
-          aggregators.
-        </p>
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Source collections">
+        <Button size="sm" variant={sourceSet === "corpus" ? "default" : "outline"} onClick={() => setSourceSet("corpus")} aria-pressed={sourceSet === "corpus"}>
+          Answer corpus ({CORPUS.length})
+        </Button>
+        <Button size="sm" variant={sourceSet === "supplied" ? "default" : "outline"} onClick={() => setSourceSet("supplied")} aria-pressed={sourceSet === "supplied"}>
+          Supplied references ({uploadedSources.length})
+        </Button>
       </div>
-      <div className="space-y-2">
-        {CORPUS.map((c) => (
+      {sourceSet === "corpus" ? <>
+        <div className="rounded-lg border border-border bg-card p-4">
+          <h2 className="text-base font-semibold">Corpus ({CORPUS.length} official records)</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Domains: {domains.join(" · ")}. Only AMC, SEBI, AMFI and RTA sources — no blogs or aggregators.
+          </p>
+        </div>
+        <div className="space-y-2">
+          {CORPUS.map((c) => (
           <div key={c.id} className="rounded-lg border border-border bg-card p-4">
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               <span className="rounded bg-secondary px-1.5 py-0.5 font-mono text-secondary-foreground">
@@ -266,8 +277,29 @@ function Sources() {
               Last updated from sources: {c.lastUpdated}
             </p>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </> : <>
+        <div className="border-b border-border pb-4">
+          <h2 className="text-base font-semibold">Supplied HDFC references</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            These links were supplied separately and have not been checked against their documents. They are not used to generate answers or citations; Large Cap and Balanced Advantage are outside the four-scheme answer scope.
+          </p>
+        </div>
+        <div className="space-y-2">
+          {uploadedSources.map((source) => (
+            <div key={source.id} className="rounded-lg border border-border bg-card p-4">
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span>{source.type === "PDF" ? "Document" : "AMC page"}</span>
+                <span>· {source.scheme}</span>
+                <span>· Supplied date: {source.lastUpdated}</span>
+              </div>
+              <h3 className="mt-2 text-sm font-medium">{source.title}</h3>
+              <a href={source.url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block break-all text-xs text-primary underline underline-offset-2">{source.url}</a>
+            </div>
+          ))}
+        </div>
+      </>}
     </div>
   );
 }
